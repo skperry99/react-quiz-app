@@ -1,0 +1,149 @@
+.root {
+  display: flex;
+  font-family: "Oxanium", sans-serif;
+  padding: 0%;
+  margin: 0%;
+}
+
+h1 {
+  text-transform: uppercase;
+  font-size: 4rem;
+  flex-grow: 1;
+}
+
+h2 {
+  margin: 20px auto;
+}
+
+.options-list {
+  list-style: none;
+  padding: 0;
+  margin: auto 10vw;
+}
+.options-list li {
+  display: block;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border: 1px;
+  border-radius: 4px;
+  font-size: 1.7rem;
+  opacity: 0;
+  transform: translateX(100%);
+  animation: slideInFromRight 1s ease-out forwards;
+}
+
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(100%); /* Start 100% of its width to the right */
+    opacity: 0; /* Optional: Start invisible and fade in */
+  }
+  100% {
+    transform: translateX(0); /* End at its original position */
+    opacity: 1; /* Optional: End fully visible */
+  }
+}
+
+/* Add delays for sequential animation */
+ul li:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+ul li:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+ul li:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+ul li:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+button {
+  background-color: #6b7c98;
+  color: #e9e6e7;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  box-shadow: 0 9px #999;
+}
+
+.option-btn {
+  margin-right: 20px;
+  flex-grow: 1;
+  width: 200px;
+  height: 40px;
+}
+
+.correct-answer-style:active {
+  background-color: green;
+}
+
+.incorrect-answer-style {
+  background-color: red;
+}
+
+button:hover {
+  transform: scale(1.1);
+  font-style: oblique;
+}
+
+header {
+  color: #e9e6e7;
+  background-color: #6b7c98;
+  width: 100%;
+  height: 180px;
+  text-align: center;
+  align-content: center;
+  flex-grow: 1;
+}
+
+#question {
+  text-align: center;
+  color: #e9e6e7;
+  margin: 20px auto;
+  font-size: 2rem;
+}
+
+body {
+  background-color: #7b7f8a;
+  color: #e9e6e7;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+#feedback {
+  text-align: center;
+  font-size: 1.7rem;
+  font-style: italic;
+  display: block;
+  animation: fadeIn 0.8s ease-in-out forwards;
+}
+
+.next-btn,
+.new-btn {
+  float: inline-end;
+  margin-right: 150px;
+}
+
+.quiz {
+  width: 80%;
+  margin: 30px 150px;
+}
+
+.result {
+  text-align: center;
+  font-size: x-large;
+}
