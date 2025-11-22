@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Question from "./Question.jsx";
 import Result from "./Results.jsx";
 import Feedback from "./Feedback.jsx";
 import { quizArray } from "../helpers/quiz.js";
 
 const Quiz = () => {
-  const [questions, setQuestions] = useState([]);
+  const questions = quizArray; // use the array from helpers
+
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
@@ -14,23 +15,15 @@ const Quiz = () => {
   const [showFeedbackMessage, setShowFeedbackMessage] = useState(false);
   const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null); // 👈 NEW
-
-  useEffect(() => {
-    setQuestions(quizArray);
-  }, []);
-
-  if (!questions.length) {
-    return <div className="quiz loading">Loading questions…</div>;
-  }
+  const [selectedOption, setSelectedOption] = useState(null);
 
   const currentQuestion = questions[currentQuestionIndex];
-  const correctAnswer = currentQuestion.answer;
+  const correctAnswer = currentQuestion.correctAnswer; // ✅ use the real property
 
   const handleAnswer = (option) => {
     if (isLocked) return;
 
-    setSelectedOption(option); // 👈 remember which one they clicked
+    setSelectedOption(option);
 
     const isCorrect = option === correctAnswer;
 
@@ -51,15 +44,17 @@ const Quiz = () => {
 
     if (isLastQuestion) {
       setShowResult(true);
-    } else {
-      setCurrentQuestionIndex((prev) => prev + 1);
-      // reset per-question state
-      setAnswerStatus(null);
-      setShowFeedbackMessage(false);
-      setShowCorrectAnswer(false);
-      setIsLocked(false);
-      setSelectedOption(null); // 👈 reset
+      return;
     }
+
+    setCurrentQuestionIndex((prev) => prev + 1);
+
+    // reset per-question state
+    setAnswerStatus(null);
+    setShowFeedbackMessage(false);
+    setShowCorrectAnswer(false);
+    setIsLocked(false);
+    setSelectedOption(null);
   };
 
   const handleRestart = () => {
@@ -89,9 +84,9 @@ const Quiz = () => {
             questionNum={currentQuestionIndex + 1}
             onAnswer={handleAnswer}
             isLocked={isLocked}
-            selectedOption={selectedOption} // 👈 NEW
-            correctAnswer={correctAnswer} // 👈 NEW
-            showCorrectAnswer={showCorrectAnswer} // 👈 NEW
+            selectedOption={selectedOption}
+            correctAnswer={correctAnswer}
+            showCorrectAnswer={showCorrectAnswer}
           />
 
           {showFeedbackMessage && (

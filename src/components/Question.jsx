@@ -21,10 +21,8 @@ const Question = ({
 
             if (showCorrectAnswer) {
               if (option === correctAnswer) {
-                // highlight the correct one
                 extraClass = " option-btn--correct";
               } else if (option === selectedOption) {
-                // user's wrong choice
                 extraClass = " option-btn--incorrect";
               }
             }
@@ -32,6 +30,7 @@ const Question = ({
             return (
               <li key={index} className="option-item">
                 <button
+                  type="button"
                   className={`option-btn${extraClass}`}
                   disabled={isLocked}
                   onClick={() => onAnswer(option)}
