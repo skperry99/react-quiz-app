@@ -1,9 +1,11 @@
-const Feedback = ({ isRight }) => {
+const Feedback = ({ isRight, message }) => {
+  if (!message) return null;
+
   return (
     <p
       className={`feedback ${isRight ? "feedback--right" : "feedback--wrong"}`}
     >
-      {isRight ? "Nice work! ✅" : "Not quite — but keep going! ✏️"}
+      {message}
     </p>
   );
 };

@@ -3,9 +3,10 @@ import Question from "./Question.jsx";
 import Result from "./Results.jsx";
 import Feedback from "./Feedback.jsx";
 import { quizArray } from "../helpers/quiz.js";
+import { rightResponse, wrongResponse } from "../helpers/feedback.js";
 
 const Quiz = () => {
-  const questions = quizArray; // use the array from helpers
+  const questions = quizArray;
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -16,9 +17,10 @@ const Quiz = () => {
   const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [feedbackMessage, setFeedbackMessage] = useState(""); // 👈 NEW
 
   const currentQuestion = questions[currentQuestionIndex];
-  const correctAnswer = currentQuestion.correctAnswer; // ✅ use the real property
+  const correctAnswer = currentQuestion.correctAnswer;
 
   const handleAnswer = (option) => {
     if (isLocked) return;
@@ -26,6 +28,9 @@ const Quiz = () => {
     setSelectedOption(option);
 
     const isCorrect = option === correctAnswer;
+    const pool = isCorrect ? rightResponse : wrongResponse;
+    const randomIdx = Math.floor(Math.random() * pool.length);
+    const message = pool[randomIdx];
 
     if (isCorrect) {
       setScore((prev) => prev + 1);
@@ -34,6 +39,7 @@ const Quiz = () => {
       setAnswerStatus("incorrect");
     }
 
+    setFeedbackMessage(message); // 👈 store chosen message
     setShowFeedbackMessage(true);
     setShowCorrectAnswer(true);
     setIsLocked(true);
@@ -55,6 +61,7 @@ const Quiz = () => {
     setShowCorrectAnswer(false);
     setIsLocked(false);
     setSelectedOption(null);
+    setFeedbackMessage(""); // 👈 reset
   };
 
   const handleRestart = () => {
@@ -66,6 +73,7 @@ const Quiz = () => {
     setShowCorrectAnswer(false);
     setIsLocked(false);
     setSelectedOption(null);
+    setFeedbackMessage("");
   };
 
   return (
@@ -89,8 +97,11 @@ const Quiz = () => {
             showCorrectAnswer={showCorrectAnswer}
           />
 
-          {showFeedbackMessage && (
-            <Feedback isRight={answerStatus === "correct"} />
+          {showFeedbackMessage && feedbackMessage && (
+            <Feedback
+              isRight={answerStatus === "correct"}
+              message={feedbackMessage}
+            />
           )}
 
           {showCorrectAnswer && (
