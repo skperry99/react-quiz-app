@@ -5,8 +5,17 @@ import Feedback from "./Feedback.jsx";
 import { quizArray } from "../helpers/quiz.js";
 import { rightResponse, wrongResponse } from "../helpers/feedback.js";
 
+const shuffleArray = (arr) => {
+  const copy = [...arr]; // don’t mutate original quizArray
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+};
+
 const Quiz = () => {
-  const questions = quizArray;
+  const [questions, setQuestions] = useState(() => shuffleArray(quizArray));
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -65,6 +74,7 @@ const Quiz = () => {
   };
 
   const handleRestart = () => {
+    setQuestions(shuffleArray(quizArray)); // 👈 new
     setCurrentQuestionIndex(0);
     setScore(0);
     setShowResult(false);
