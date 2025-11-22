@@ -1,0 +1,15 @@
+# Build output
+dist
+dist-ssr
+
+# Dependencies
+node_modules
+
+# Coverage / lint cache
+coverage
+.eslintcache
+
+# Vite env files (if any)
+*.local
+.env
+.env*.local

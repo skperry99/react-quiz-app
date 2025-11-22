@@ -1,8 +1,10 @@
-const Header = () => {
+export default function Header() {
   return (
-    <header>
-      <h1>Super Duper Quiz</h1>
+    <header className="app-header">
+      <h1 className="app-title">Chalkboard Quiz</h1>
+      <p className="app-subtitle">
+        Grab a (virtual) piece of chalk and test what you know.
+      </p>
     </header>
   );
-};
-export default Header;
+}

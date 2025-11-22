@@ -1,34 +1,46 @@
 const Question = ({
   questionData,
-  handleAnswer,
-  handleClick,
   questionNum,
-  buttonClassName,
+  onAnswer,
+  isLocked,
+  selectedOption,
+  correctAnswer,
+  showCorrectAnswer,
 }) => {
+  const { text, options } = questionData;
+
   return (
     <>
       <p id="question">
-        {questionNum}
-        {" - "}
-        {questionData.text}
+        {questionNum} - {text}
       </p>
       <div className="options">
         <ul className="options-list">
-          {questionData.options.map((option, index) => (
-            <li key={index}>
-              <button
-                name={"optionBtn" + index}
-                className={buttonClassName}
-                key={index}
-                onClick={() => {
-                  handleAnswer(index);
-                  handleClick(index);
-                }}
-              >
-                {option}
-              </button>
-            </li>
-          ))}
+          {options.map((option, index) => {
+            let extraClass = "";
+
+            if (showCorrectAnswer) {
+              if (option === correctAnswer) {
+                // highlight the correct one
+                extraClass = " option-btn--correct";
+              } else if (option === selectedOption) {
+                // user's wrong choice
+                extraClass = " option-btn--incorrect";
+              }
+            }
+
+            return (
+              <li key={index} className="option-item">
+                <button
+                  className={`option-btn${extraClass}`}
+                  disabled={isLocked}
+                  onClick={() => onAnswer(option)}
+                >
+                  {option}
+                </button>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </>

@@ -1,90 +1,121 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Question from "./Question.jsx";
 import Result from "./Results.jsx";
-import { quizArray } from "../helpers/quiz.js";
 import Feedback from "./Feedback.jsx";
-// import { shuffleArray } from "../helpers/helpers.js";
+import { quizArray } from "../helpers/quiz.js";
 
 const Quiz = () => {
-  // const quizArray = shuffleArray(quizArray);
+  const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
-  const [answerStatus, setAnswerStatus] = useState(null); // 'correct', 'incorrect', or null
+
+  const [answerStatus, setAnswerStatus] = useState(null); // 'correct' | 'incorrect' | null
   const [showFeedbackMessage, setShowFeedbackMessage] = useState(false);
-  const [showAnsMessage, setShowAnsMessage] = useState(false);
-  // const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  // const [isButtonClicked, setIsButtonClicked] = useState(false);
+  const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(null); // 👈 NEW
 
-  const nextQuestionIndex = currentQuestionIndex + 1;
-  const correctAnswer = quizArray[currentQuestionIndex].text;
+  useEffect(() => {
+    setQuestions(quizArray);
+  }, []);
 
-  const handleAnswer = (selectedOption) => {
-    if (selectedOption === quizArray[currentQuestionIndex].answerIdx) {
-      setScore(score + 1);
-      setAnswerStatus(true);
-      setShowFeedbackMessage(true);
+  if (!questions.length) {
+    return <div className="quiz loading">Loading questions…</div>;
+  }
+
+  const currentQuestion = questions[currentQuestionIndex];
+  const correctAnswer = currentQuestion.answer;
+
+  const handleAnswer = (option) => {
+    if (isLocked) return;
+
+    setSelectedOption(option); // 👈 remember which one they clicked
+
+    const isCorrect = option === correctAnswer;
+
+    if (isCorrect) {
+      setScore((prev) => prev + 1);
+      setAnswerStatus("correct");
     } else {
-      setAnswerStatus(false);
-      setShowAnsMessage(true);
-      setShowFeedbackMessage(true);
+      setAnswerStatus("incorrect");
     }
-  };
 
-  const getButtonClassName = () => {
-    if (answerStatus === true) {
-      return "correct-answer-style";
-    } else if (answerStatus === false) {
-      return "incorrect-answer-style";
-    }
-    return ""; // No specific style initially
-  };
-
-  // const handleButton = () => {};
-
-  const handleNewQuiz = () => {
-    setCurrentQuestionIndex(0);
-    setScore(0);
-    setShowResult(false);
-    setShowAnsMessage(false);
-    setShowFeedbackMessage(false);
+    setShowFeedbackMessage(true);
+    setShowCorrectAnswer(true);
+    setIsLocked(true);
   };
 
   const handleNextQuestion = () => {
-    if (nextQuestionIndex < quizArray.length) {
-      setCurrentQuestionIndex(nextQuestionIndex);
-      setShowFeedbackMessage(false);
-      setAnswerStatus(null);
-    } else {
+    const isLastQuestion = currentQuestionIndex === questions.length - 1;
+
+    if (isLastQuestion) {
       setShowResult(true);
+    } else {
+      setCurrentQuestionIndex((prev) => prev + 1);
+      // reset per-question state
+      setAnswerStatus(null);
       setShowFeedbackMessage(false);
+      setShowCorrectAnswer(false);
+      setIsLocked(false);
+      setSelectedOption(null); // 👈 reset
     }
+  };
+
+  const handleRestart = () => {
+    setCurrentQuestionIndex(0);
+    setScore(0);
+    setShowResult(false);
+    setAnswerStatus(null);
+    setShowFeedbackMessage(false);
+    setShowCorrectAnswer(false);
+    setIsLocked(false);
+    setSelectedOption(null);
   };
 
   return (
     <div className="quiz">
-      {showResult ? (
-        <div>
-          <Result score={score} totalQuestions={quizArray.length} />
-          <button className="new-btn" onClick={handleNewQuiz}>
-            New Quiz
-          </button>
-        </div>
-      ) : (
+      {!showResult ? (
         <>
+          <div className="quiz-status">
+            <span>
+              Question {currentQuestionIndex + 1} of {questions.length}
+            </span>
+            <span>Score: {score}</span>
+          </div>
+
           <Question
-            questionData={quizArray[currentQuestionIndex]}
-            questionNum={nextQuestionIndex}
-            handleAnswer={handleAnswer}
-            buttonClassName={getButtonClassName()}
-            // handleClick={handleButton}
+            questionData={currentQuestion}
+            questionNum={currentQuestionIndex + 1}
+            onAnswer={handleAnswer}
+            isLocked={isLocked}
+            selectedOption={selectedOption} // 👈 NEW
+            correctAnswer={correctAnswer} // 👈 NEW
+            showCorrectAnswer={showCorrectAnswer} // 👈 NEW
           />
-          {showFeedbackMessage && <Feedback isRight={answerStatus} />}
-          {showAnsMessage && <p>{correctAnswer}</p>}
+
+          {showFeedbackMessage && (
+            <Feedback isRight={answerStatus === "correct"} />
+          )}
+
+          {showCorrectAnswer && (
+            <p className="correct-answer">
+              Correct answer: <strong>{correctAnswer}</strong>
+            </p>
+          )}
+
           <button className="next-btn" onClick={handleNextQuestion}>
-            Next Question
+            {currentQuestionIndex === questions.length - 1
+              ? "See Results"
+              : "Next Question"}
           </button>
         </>
+      ) : (
+        <Result
+          score={score}
+          total={questions.length}
+          onRestart={handleRestart}
+        />
       )}
     </div>
   );
