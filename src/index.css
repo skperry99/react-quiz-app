@@ -1,118 +1,331 @@
-.root {
+/* ---- 0. CSS Reset-ish ---- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ---- 1. Theme tokens ---- */
+:root {
+  --chalkboard-bg: #152b18; /* deep green */
+  --chalkboard-border: #0b1810;
+  --chalk-white: #fdfbf3;
+  --chalk-muted: #c9c5b5;
+
+  --chalk-yellow: #ffd85c;
+  --chalk-pink: #ff9aa2;
+  --chalk-blue: #9ad1ff;
+  --chalk-green: #b5ffb3;
+
+  --card-bg: rgba(10, 22, 14, 0.92);
+  --card-border: #233a21;
+
+  --radius-lg: 18px;
+  --shadow-chalk: 0 0 0 2px rgba(255, 255, 255, 0.08);
+
+  --font-chalk:
+    "Gloria Hallelujah", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --font-ui:
+    "Oxanium", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* ---- 2. Page background ---- */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-ui);
+  background-color: var(--chalkboard-bg);
+  color: var(--chalk-white);
   display: flex;
-  font-family: "Oxanium", sans-serif;
-  padding: 0%;
-  margin: 0%;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+  background-image:
+    radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.04), transparent 55%),
+    radial-gradient(
+      circle at 100% 100%,
+      rgba(255, 255, 255, 0.02),
+      transparent 55%
+    );
 }
 
-h1 {
+/* ---- 3. App shell ---- */
+#root {
+  width: 100%;
+  max-width: 960px;
+}
+
+.App {
+  border-radius: var(--radius-lg);
+  border: 3px solid var(--chalkboard-border);
+  background: var(--card-bg);
+  box-shadow:
+    var(--shadow-chalk),
+    0 18px 45px rgba(0, 0, 0, 0.65);
+  padding: 1.75rem 1.5rem 2rem;
+  position: relative;
+}
+
+/* Adjust spacing on small screens */
+@media (min-width: 768px) {
+  .App {
+    padding: 2.25rem 2rem 2.5rem;
+  }
+}
+
+/* ---- 4. Header ---- */
+.app-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.app-title {
+  font-family: var(--font-chalk);
+  font-size: clamp(2.1rem, 3vw, 2.5rem);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  font-size: 4rem;
-  flex-grow: 1;
+  color: var(--chalk-yellow);
+  text-shadow:
+    0 0 4px rgba(0, 0, 0, 0.5),
+    0 2px 0 rgba(0, 0, 0, 0.7);
 }
 
-h2 {
-  margin: 20px auto;
+.app-subtitle {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  color: var(--chalk-muted);
+}
+
+/* ---- 5. Quiz layout ---- */
+.quiz {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.quiz-status {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: var(--chalk-muted);
+}
+
+/* Optionally stack on narrow screens */
+@media (max-width: 480px) {
+  .quiz-status {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+}
+
+/* ---- 6. Question ---- */
+#question {
+  font-family: var(--font-chalk);
+  font-size: 1.4rem;
+  line-height: 1.6;
+  color: var(--chalk-white);
+  border-bottom: 2px dashed rgba(255, 255, 255, 0.18);
+  padding-bottom: 1rem;
+  text-align: center;
+}
+
+/* ---- 7. Options ---- */
+.options {
+  margin-top: 0.75rem;
 }
 
 .options-list {
   list-style: none;
-  padding: 0;
-  margin: auto 10vw;
+  display: grid;
+  gap: 0.75rem;
+  margin: 0 auto; /* center within the card */
 }
-.options-list li {
-  display: block;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  padding: 8px 12px;
-  border: 1px;
-  border-radius: 4px;
-  font-size: 1.7rem;
+
+/* 2-column layout on wider screens */
+@media (min-width: 600px) {
+  .options-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Each LI acts as the animated container */
+.option-item {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  /* slide in from right */
   opacity: 0;
   transform: translateX(100%);
-  animation: slideInFromRight 1s ease-out forwards;
+  animation: slideInFromRight 0.6s ease-out forwards;
 }
 
+/* Staggered animation delays (scoped to this list) */
+.options-list .option-item:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.options-list .option-item:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.options-list .option-item:nth-child(3) {
+  animation-delay: 0.25s;
+}
+.options-list .option-item:nth-child(4) {
+  animation-delay: 0.35s;
+}
+
+/* Option button styling */
+.option-btn {
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 0.9rem;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  background: rgba(14, 30, 19, 0.9);
+  color: var(--chalk-white);
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition:
+    transform 0.08s ease-out,
+    box-shadow 0.08s ease-out,
+    border-color 0.08s ease-out,
+    background 0.08s ease-out;
+}
+
+/* Hover effect */
+.option-btn:hover:not(:disabled) {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+  border-color: rgba(255, 255, 255, 0.32);
+}
+
+/* Click */
+.option-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Disabled state after answering */
+.option-btn:disabled {
+  opacity: 0.75;
+  cursor: default;
+}
+
+/* If you add correct/incorrect classes */
+.option-btn--correct {
+  border-color: var(--chalk-green);
+  box-shadow: 0 0 0 2px rgba(181, 255, 179, 0.3);
+}
+.option-btn--incorrect {
+  border-color: var(--chalk-pink);
+  box-shadow: 0 0 0 2px rgba(255, 154, 162, 0.25);
+}
+
+/* ---- 8. Feedback + correct answer ---- */
+.feedback,
+#feedback {
+  font-family: var(--font-chalk);
+  font-size: 1.1rem;
+  text-align: center;
+  font-style: italic;
+  opacity: 0;
+  animation: fadeIn 0.8s ease-in-out forwards;
+}
+
+.feedback--right {
+  color: var(--chalk-green);
+}
+
+.feedback--wrong {
+  color: var(--chalk-pink);
+}
+
+.correct-answer {
+  font-size: 0.95rem;
+  color: var(--chalk-blue);
+  text-align: center;
+}
+
+/* ---- 9. Next button ---- */
+.next-btn,
+.new-btn {
+  align-self: flex-end;
+  margin-top: 0.5rem;
+  padding: 0.6rem 1.4rem;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.22);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 216, 92, 0.24),
+    rgba(255, 154, 162, 0.16)
+  );
+  color: var(--chalk-white);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    transform 0.08s ease-out,
+    box-shadow 0.08s ease-out,
+    background 0.08s ease-out;
+}
+
+.next-btn:hover,
+.new-btn:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+}
+
+.next-btn:active,
+.new-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* ---- 10. Results ---- */
+.results {
+  text-align: center;
+  padding: 1.5rem 1rem 0.5rem;
+  font-size: 1rem;
+}
+
+.results-title {
+  font-family: var(--font-chalk);
+  font-size: 1.7rem;
+  color: var(--chalk-yellow);
+  margin-bottom: 0.75rem;
+}
+
+.results-score {
+  font-size: 1rem;
+  color: var(--chalk-muted);
+  margin-bottom: 1.25rem;
+}
+
+.results-restart-btn {
+  margin-top: 0.5rem;
+}
+
+/* ---- 11. Animations ---- */
 @keyframes slideInFromRight {
   0% {
-    transform: translateX(100%); /* Start 100% of its width to the right */
-    opacity: 0; /* Optional: Start invisible and fade in */
+    transform: translateX(100%);
+    opacity: 0;
   }
   100% {
-    transform: translateX(0); /* End at its original position */
-    opacity: 1; /* Optional: End fully visible */
+    transform: translateX(0);
+    opacity: 1;
   }
-}
-
-/* Add delays for sequential animation */
-ul li:nth-child(1) {
-  animation-delay: 0.1s;
-}
-
-ul li:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-ul li:nth-child(3) {
-  animation-delay: 0.3s;
-}
-
-ul li:nth-child(4) {
-  animation-delay: 0.4s;
-}
-
-button {
-  background-color: #6b7c98;
-  color: #e9e6e7;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1.2rem;
-  box-shadow: 0 9px #999;
-}
-
-.option-btn {
-  margin-right: 20px;
-  flex-grow: 1;
-  width: 200px;
-  height: 40px;
-}
-
-.correct-answer-style:active {
-  background-color: green;
-}
-
-.incorrect-answer-style {
-  background-color: red;
-}
-
-button:hover {
-  transform: scale(1.1);
-  font-style: oblique;
-}
-
-header {
-  color: #e9e6e7;
-  background-color: #6b7c98;
-  width: 100%;
-  height: 180px;
-  text-align: center;
-  align-content: center;
-  flex-grow: 1;
-}
-
-#question {
-  text-align: center;
-  color: #e9e6e7;
-  margin: 20px auto;
-  font-size: 2rem;
-}
-
-body {
-  background-color: #7b7f8a;
-  color: #e9e6e7;
 }
 
 @keyframes fadeIn {
@@ -124,26 +337,33 @@ body {
   }
 }
 
-#feedback {
-  text-align: center;
-  font-size: 1.7rem;
-  font-style: italic;
-  display: block;
-  animation: fadeIn 0.8s ease-in-out forwards;
+/* ---- 12. Chalk doodles ---- */
+.App::before,
+.App::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.22;
 }
 
-.next-btn,
-.new-btn {
-  float: inline-end;
-  margin-right: 150px;
+/* Little chalk “smudge” top-left */
+.App::before {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid rgba(253, 251, 243, 0.4);
+  top: -18px;
+  left: -18px;
+  transform: rotate(-8deg);
 }
 
-.quiz {
-  width: 80%;
-  margin: 30px 150px;
-}
-
-.result {
-  text-align: center;
-  font-size: x-large;
+/* Tiny “A+” underline scribble top-right */
+.App::after {
+  width: 70px;
+  height: 24px;
+  border-bottom: 2px solid rgba(253, 251, 243, 0.45);
+  border-radius: 999px;
+  top: 14px;
+  right: 18px;
+  transform: rotate(6deg);
 }

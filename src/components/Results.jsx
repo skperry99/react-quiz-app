@@ -1,11 +1,27 @@
-const Result = ({ score, totalQuestions }) => {
+const Result = ({ score, total, onRestart }) => {
+  const percentage = Math.round((score / total) * 100) || 0;
+
   return (
-    <div className="result">
-      <h2>Quiz Completed!</h2>
-      <p>
-        You scored {score} out of {totalQuestions}.
+    <section className="results" aria-labelledby="results-heading">
+      <h2 id="results-heading" className="results-title">
+        Quiz Completed!
+      </h2>
+
+      <p className="results-score">
+        You scored <strong>{score}</strong> out of <strong>{total}</strong> (
+        {percentage}%).
       </p>
-    </div>
+
+      {onRestart && (
+        <button
+          type="button"
+          className="next-btn results-restart-btn"
+          onClick={onRestart}
+        >
+          Try again
+        </button>
+      )}
+    </section>
   );
 };
 

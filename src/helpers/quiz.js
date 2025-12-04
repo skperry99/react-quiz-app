@@ -131,47 +131,6 @@ for (let i = 0; i < questionArray.length; i++) {
     new QuizInfo(i + 1, questionArray[i], answerArray[i], indexArray[i])
   );
 }
-// Access quiz items like this:
-// quizObjects.q1 or quizObjects["q1"]
-// quizObjects.q2 or quizObjects["q2"]
-// ... and so on
-
-// let q1 = new QuizInfo(1, questionArray[0], answerArray[0], indexArray[0]);
-// let q2 = new QuizInfo(2, questionArray[1], answerArray[1], indexArray[1]);
-// let q3 = new QuizInfo(3, questionArray[2], answerArray[2], indexArray[2]);
-// let q4 = new QuizInfo(4, questionArray[3], answerArray[3], indexArray[3]);
-// let q5 = new QuizInfo(5, questionArray[4], answerArray[4], indexArray[4]);
-// let q6 = new QuizInfo(6, questionArray[5], answerArray[5], indexArray[5]);
-// let q7 = new QuizInfo(7, questionArray[6], answerArray[6], indexArray[6]);
-// let q8 = new QuizInfo(8, questionArray[7], answerArray[7], indexArray[7]);
-// let q9 = new QuizInfo(9, questionArray[8], answerArray[8], indexArray[8]);
-// let q10 = new QuizInfo(10, questionArray[9], answerArray[9], indexArray[9]);
-// let q11 = new QuizInfo(11, questionArray[10], answerArray[10], indexArray[10]);
-// let q12 = new QuizInfo(12, questionArray[11], answerArray[11], indexArray[11]);
-// let q13 = new QuizInfo(13, questionArray[12], answerArray[12], indexArray[12]);
-// let q14 = new QuizInfo(14, questionArray[13], answerArray[13], indexArray[13]);
-// let q15 = new QuizInfo(15, questionArray[14], answerArray[14], indexArray[14]);
-// let q16 = new QuizInfo(16, questionArray[15], answerArray[15], indexArray[15]);
-
-// Array of question objects
-// const quizArray = [
-//   q1,
-//   q2,
-//   q3,
-//   q4,
-//   q5,
-//   q6,
-//   q7,
-//   q8,
-//   q9,
-//   q10,
-//   q11,
-//   q12,
-//   q13,
-//   q14,
-//   q15,
-//   q16,
-// ];
 
 // Populating answerArray for each question object in quizArray
 for (let i = 0; i < quizArray.length; i++) {
@@ -180,5 +139,5 @@ for (let i = 0; i < quizArray.length; i++) {
     quizArray[i].options.push(optionArray[num]);
   }
 }
-console.log(quizArray[0]);
+// console.log(quizArray[0]);
 export { quizArray };

@@ -1,10 +1,13 @@
-// import { useState } from "react";
-import { rightResponse, wrongResponse } from "../helpers/feedback";
-import { getRandom } from "../helpers/helpers";
+const Feedback = ({ isRight, message }) => {
+  if (!message) return null;
 
-const Feedback = ({ isRight }) => {
-  let response = isRight ? getRandom(rightResponse) : getRandom(wrongResponse);
-  return <div id="feedback">{response}</div>;
+  return (
+    <p
+      className={`feedback ${isRight ? "feedback--right" : "feedback--wrong"}`}
+    >
+      {message}
+    </p>
+  );
 };
 
 export default Feedback;
