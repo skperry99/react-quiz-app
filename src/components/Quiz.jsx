@@ -3,7 +3,7 @@ import Question from "./Question.jsx";
 import Result from "./Results.jsx";
 import Feedback from "./Feedback.jsx";
 import { quizArray } from "../helpers/quiz.js";
-import { rightResponse, wrongResponse } from "../helpers/feedback.js";
+import { getRandomFeedback } from "../helpers/feedback.js";
 
 const shuffleArray = (arr) => {
   const copy = [...arr]; // don’t mutate original quizArray
@@ -37,9 +37,7 @@ const Quiz = () => {
     setSelectedOption(option);
 
     const isCorrect = option === correctAnswer;
-    const pool = isCorrect ? rightResponse : wrongResponse;
-    const randomIdx = Math.floor(Math.random() * pool.length);
-    const message = pool[randomIdx];
+    const message = getRandomFeedback(isCorrect);
 
     if (isCorrect) {
       setScore((prev) => prev + 1);
@@ -70,11 +68,11 @@ const Quiz = () => {
     setShowCorrectAnswer(false);
     setIsLocked(false);
     setSelectedOption(null);
-    setFeedbackMessage(""); // 👈 reset
+    setFeedbackMessage(""); // reset
   };
 
   const handleRestart = () => {
-    setQuestions(shuffleArray(quizArray)); // 👈 new
+    setQuestions(shuffleArray(quizArray));
     setCurrentQuestionIndex(0);
     setScore(0);
     setShowResult(false);
