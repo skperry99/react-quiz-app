@@ -1,12 +1,19 @@
-import { useState } from "react";
+// src/components/Quiz.jsx
+import { useEffect, useState } from "react";
 import Question from "./Question.jsx";
 import Result from "./Results.jsx";
 import Feedback from "./Feedback.jsx";
 import { quizArray } from "../helpers/quiz.js";
-import { getRandomFeedback } from "../helpers/feedback.js";
+import { getRandomFeedback } from "../helpers/feedback.js"; // ✅ new import
 
+// For now, default to localhost:8080.
+// TODO: set VITE_API_BASE_URL in .env for different environments.
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
+
+// Fisher–Yates shuffle
 const shuffleArray = (arr) => {
-  const copy = [...arr]; // don’t mutate original quizArray
+  const copy = [...arr];
   for (let i = copy.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [copy[i], copy[j]] = [copy[j], copy[i]];
@@ -15,7 +22,9 @@ const shuffleArray = (arr) => {
 };
 
 const Quiz = () => {
-  const [questions, setQuestions] = useState(() => shuffleArray(quizArray));
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -26,7 +35,55 @@ const Quiz = () => {
   const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
-  const [feedbackMessage, setFeedbackMessage] = useState(""); // 👈 NEW
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+
+  // ---- Load questions from backend (with fallback to local quizArray) ----
+  useEffect(() => {
+    async function loadQuestions() {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/questions`);
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+
+        if (Array.isArray(data) && data.length > 0) {
+          setQuestions(shuffleArray(data));
+        } else {
+          // Backend returned empty array; fallback to local seed
+          setQuestions(shuffleArray(quizArray));
+        }
+      } catch (err) {
+        console.error(
+          "Failed to load questions from API, using local data:",
+          err
+        );
+        setLoadError(err.message);
+        setQuestions(shuffleArray(quizArray));
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadQuestions();
+  }, []);
+
+  // ---- Early states: loading / empty ----
+  if (loading) {
+    return <div className="quiz">Loading questions…</div>;
+  }
+
+  if (!questions.length) {
+    return (
+      <div className="quiz">
+        <p>No questions available.</p>
+        {loadError && (
+          <p className="feedback feedback--wrong">Error: {loadError}</p>
+        )}
+      </div>
+    );
+  }
 
   const currentQuestion = questions[currentQuestionIndex];
   const correctAnswer = currentQuestion.correctAnswer;
@@ -37,6 +94,8 @@ const Quiz = () => {
     setSelectedOption(option);
 
     const isCorrect = option === correctAnswer;
+
+    // ✅ use weighted feedback helper
     const message = getRandomFeedback(isCorrect);
 
     if (isCorrect) {
@@ -46,7 +105,7 @@ const Quiz = () => {
       setAnswerStatus("incorrect");
     }
 
-    setFeedbackMessage(message); // 👈 store chosen message
+    setFeedbackMessage(message);
     setShowFeedbackMessage(true);
     setShowCorrectAnswer(true);
     setIsLocked(true);
@@ -68,11 +127,12 @@ const Quiz = () => {
     setShowCorrectAnswer(false);
     setIsLocked(false);
     setSelectedOption(null);
-    setFeedbackMessage(""); // reset
+    setFeedbackMessage("");
   };
 
   const handleRestart = () => {
-    setQuestions(shuffleArray(quizArray));
+    // reshuffle whatever question set we currently have (API or fallback)
+    setQuestions((prev) => shuffleArray(prev));
     setCurrentQuestionIndex(0);
     setScore(0);
     setShowResult(false);
@@ -123,6 +183,12 @@ const Quiz = () => {
               ? "See Results"
               : "Next Question"}
           </button>
+
+          {loadError && (
+            <p className="feedback feedback--wrong">
+              (Using local questions. API error: {loadError})
+            </p>
+          )}
         </>
       ) : (
         <Result
