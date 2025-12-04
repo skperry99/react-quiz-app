@@ -367,3 +367,29 @@ body {
   right: 18px;
   transform: rotate(6deg);
 }
+
+.app-nav {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.nav-btn {
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.15);
+  color: var(--chalk-white);
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.nav-btn--active {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 216, 92, 0.4),
+    rgba(255, 154, 162, 0.3)
+  );
+}

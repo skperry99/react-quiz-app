@@ -3,13 +3,9 @@ import { useEffect, useState } from "react";
 import Question from "./Question.jsx";
 import Result from "./Results.jsx";
 import Feedback from "./Feedback.jsx";
+import { API_BASE_URL } from "../config/api.js";
 import { quizArray } from "../helpers/quiz.js";
-import { getRandomFeedback } from "../helpers/feedback.js"; // ✅ new import
-
-// For now, default to localhost:8080.
-// TODO: set VITE_API_BASE_URL in .env for different environments.
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
+import { getRandomFeedback } from "../helpers/feedback.js";
 
 // Fisher–Yates shuffle
 const shuffleArray = (arr) => {
