@@ -5,7 +5,7 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <main>
+      <main aria-label="Quiz content">
         <Quiz />
       </main>
     </div>
