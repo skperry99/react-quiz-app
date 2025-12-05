@@ -44,6 +44,24 @@ The frontend is built with **React + Vite**, and the backend is a **Spring Boot 
 
 ---
 
+## Why I Built This
+
+This project started as an extension of a LaunchCode assignment that I genuinely enjoyed working on: a small practice quiz app built with vanilla JavaScript and the DOM.
+
+Original assignment: [practice-quizApp-Sarah-P](https://github.com/skperry99/practice-quizApp-Sarah-P)
+
+I wanted to take that simple idea and treat it like a “mini capstone”:
+
+- Rebuild the experience with a modern **React + Vite** frontend.
+- Give it a cozy, playful **chalkboard UI** that feels like an actual classroom quiz.
+- Add a real **Spring Boot + MySQL backend** so questions live in a database instead of hardcoded arrays.
+- Introduce a **token-protected admin view** so questions can be managed through a UI instead of editing source files.
+- Experiment with fun touches like **weighted random feedback messages** and **randomized question sets**.
+
+For my portfolio, this app shows how I can take a small instructional exercise and grow it into a more production-style, full-stack feature set—with attention to both UX details and backend design.
+
+---
+
 ## Tech Stack
 
 **Frontend**
@@ -319,4 +337,5 @@ Some ideas for later:
 ## License
 
 *(Add your preferred license here, e.g. MIT.)*
+
 
