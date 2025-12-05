@@ -1,4 +1,3 @@
-// src/components/AdminGate.jsx
 import { useState } from "react";
 
 const ADMIN_PIN = import.meta.env.VITE_ADMIN_PIN ?? "letmein"; // 🚨 not real security, just a guard for now
