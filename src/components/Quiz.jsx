@@ -1,4 +1,3 @@
-// src/components/Quiz.jsx
 import { useEffect, useState } from "react";
 import Question from "./Question.jsx";
 import Result from "./Results.jsx";
@@ -6,6 +5,8 @@ import Feedback from "./Feedback.jsx";
 import { API_BASE_URL } from "../config/api.js";
 import { quizArray } from "../helpers/quiz.js";
 import { getRandomFeedback } from "../helpers/feedback.js";
+
+const QUESTION_COUNT = 10;
 
 // Fisher–Yates shuffle
 const shuffleArray = (arr) => {
@@ -17,7 +18,21 @@ const shuffleArray = (arr) => {
   return copy;
 };
 
+// Normalize questions + shuffle options inside each question
+const prepareQuestions = (rawQuestions) =>
+  rawQuestions.map((q) => ({
+    ...q,
+    options: q.options ? shuffleArray(q.options) : [],
+  }));
+
+// Pick a random subset of size <= QUESTION_COUNT
+const pickQuestionSet = (pool) => {
+  const shuffled = shuffleArray(pool);
+  return shuffled.slice(0, Math.min(QUESTION_COUNT, shuffled.length));
+};
+
 const Quiz = () => {
+  const [allQuestions, setAllQuestions] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
@@ -44,19 +59,25 @@ const Quiz = () => {
 
         const data = await res.json();
 
+        let prepared;
         if (Array.isArray(data) && data.length > 0) {
-          setQuestions(shuffleArray(data));
+          prepared = prepareQuestions(data);
         } else {
-          // Backend returned empty array; fallback to local seed
-          setQuestions(shuffleArray(quizArray));
+          prepared = prepareQuestions(quizArray);
         }
+
+        setAllQuestions(prepared);
+        setQuestions(pickQuestionSet(prepared));
       } catch (err) {
         console.error(
           "Failed to load questions from API, using local data:",
           err
         );
         setLoadError(err.message);
-        setQuestions(shuffleArray(quizArray));
+
+        const preparedFallback = prepareQuestions(quizArray);
+        setAllQuestions(preparedFallback);
+        setQuestions(pickQuestionSet(preparedFallback));
       } finally {
         setLoading(false);
       }
@@ -127,8 +148,12 @@ const Quiz = () => {
   };
 
   const handleRestart = () => {
-    // reshuffle whatever question set we currently have (API or fallback)
-    setQuestions((prev) => shuffleArray(prev));
+    if (!allQuestions.length) return;
+
+    // Pick a fresh random 10 from the full pool
+    const nextSet = pickQuestionSet(allQuestions);
+
+    setQuestions(nextSet);
     setCurrentQuestionIndex(0);
     setScore(0);
     setShowResult(false);

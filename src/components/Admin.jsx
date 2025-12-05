@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../config/api.js";
 
+const ADMIN_API_TOKEN =
+  import.meta.env.VITE_ADMIN_API_TOKEN ?? "change-me-admin-token";
+
 const emptyForm = {
   text: "",
   option0: "",
@@ -84,6 +87,9 @@ const Admin = () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/questions/${id}`, {
         method: "DELETE",
+        headers: {
+          "X-Admin-Token": ADMIN_API_TOKEN,
+        },
       });
       if (!res.ok && res.status !== 204) {
         throw new Error(`HTTP ${res.status}`);
@@ -140,7 +146,10 @@ const Admin = () => {
 
       const res = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Admin-Token": ADMIN_API_TOKEN,
+        },
         body: JSON.stringify(payload),
       });
 
