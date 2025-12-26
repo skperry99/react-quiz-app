@@ -336,6 +336,8 @@ Some ideas for later:
 
 ## License
 
-*(Add your preferred license here, e.g. MIT.)*
+This project is licensed under the MIT License. You are free to use and adapt it for learning and experimentation.  
+Full details are available in the [LICENSE](./LICENSE) file.
+
 
 
